@@ -7,7 +7,7 @@ services:
     environment:
       OTEL_SERVICE_NAME: "order-service"
       OTEL_RESOURCE_ATTRIBUTES: "service=order-service,env=dev"
-      OTEL_EXPORTER_OTLP_ENDPOINT: "http://collector:4317"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://collector:4318"
       # Logs are disabled by default
       OTEL_LOGS_EXPORTER: "otlp"
     depends_on:
@@ -26,3 +26,46 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  collector:
+    container_name: collector
+    image: otel/opentelemetry-collector-contrib:0.111.0
+    command:
+      - --config=/etc/otelcol-contrib/otel-collector.yml
+    volumes:
+      - ./collector/otel-collector.yml:/etc/otelcol-contrib/otel-collector.yml
+    ports:
+      - "4317:4317"
+
+    depends_on:
+      - loki
+      - jaeger
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    volumes:
+      - ./grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - loki
+      - jaeger
+
+  loki:
+    container_name: loki
+    image: grafana/loki:latest
+    command: -config.file=/etc/loki/local-config.yaml
+    restart: always
+
+
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:latest
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    restart: always
+    ports:
+      - "16686:16686"
+      - "4317"
