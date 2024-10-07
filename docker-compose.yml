@@ -1,0 +1,28 @@
+services:
+  order_service:
+    build: ./order
+    image: order_service:1.0
+    ports:
+      - "8080:8080"
+    environment:
+      OTEL_SERVICE_NAME: "order-service"
+      OTEL_RESOURCE_ATTRIBUTES: "service=order-service,env=dev"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://collector:4317"
+      # Logs are disabled by default
+      OTEL_LOGS_EXPORTER: "otlp"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    container_name: postgres
+    image: postgres:17
+    environment:
+      POSTGRES_DB: opentelemetry
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "opentelemetry", "-U", "username"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
