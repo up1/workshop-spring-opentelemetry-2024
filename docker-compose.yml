@@ -40,6 +40,7 @@ services:
     depends_on:
       - loki
       - jaeger
+      - grafana
 
   grafana:
     container_name: grafana

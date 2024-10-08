@@ -1,9 +1,13 @@
 # Demo with Spring Boot
 * Database => PostgreSQL
+* [OpenTelemetry](https://opentelemetry.io/)
 * Logging
-  * [OpenTelemetry](https://opentelemetry.io/)
   * [Loki](https://grafana.com/oss/loki/)
-
+* Distributed tracing
+  * [Jaeger tracing](https://www.jaegertracing.io/)
+* Application metric
+  * [Prometheus](https://prometheus.io/)
+  
 
 ## 1. Order service with Java and Spring Boot
 Build image
@@ -29,7 +33,20 @@ List of APIs
 * http://localhost:8080/orders/2
 
 ## 2. Observability of services
-
+* Otel collector
+  * Logging with loki
+  *
 ```
 $docker compose up -d collector
+$docker compose ps
 ```
+
+### Open grafana server = http://localhost:3000
+* Login
+    * username=admin
+    * password=admin
+* Go to menu explore to query login data
+    * Filter by job = order-service
+
+### Open Jaeger server = http://localhost:16686
+* Filter by service = order-service
