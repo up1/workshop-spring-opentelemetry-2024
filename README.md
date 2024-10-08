@@ -1,4 +1,4 @@
-# Demo with Spring Boot
+# Demo with Spring Boot 3.3.4
 * Database => PostgreSQL
 * [OpenTelemetry](https://opentelemetry.io/)
 * Logging
