@@ -14,8 +14,8 @@ processors:
     timeout: 10s
 
 exporters:
-  prometheusremotewrite:
-    endpoint: "http://prometheus:9090/api/v1/write"
+  # prometheusremotewrite:
+  #   endpoint: "http://prometheus:9090/api/v1/write"
 
   prometheus:
     endpoint: "0.0.0.0:8889"
@@ -25,6 +25,9 @@ exporters:
     endpoint: "http://jaeger:4317"
     tls:
       insecure: true
+
+  debug:
+    verbosity: detailed
 
 
   otlp/tempo:
@@ -40,7 +43,7 @@ service:
     metrics:
       receivers: [otlp]
       processors: [batch]
-      exporters: [prometheusremotewrite]
+      exporters: [debug]
     traces:
       receivers: [otlp]
       processors: [batch]
